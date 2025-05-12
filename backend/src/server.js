@@ -1,33 +1,38 @@
-import express from 'express';
-import cors from 'cors';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import typeDefs from './api/graphql/schema.js';
+import resolvers from './api/graphql/resolvers.js';
 import config from './config/index.js';
+import weatherService from './services/weather/index.js';
+import rankingService from './services/ranking/index.js';
 
 async function startServer() {
-  const app = express();
-  
-  app.use(cors({
-    origin: config.server.corsOrigin
-  }));
-  app.use(express.json());
-  
-  app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    formatError: (error) => {
+      console.error('GraphQL Error:', error);
+      return {
+        message: error.message,
+        code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
+      };
+    },
+    introspection: config.server.nodeEnv !== 'production',
   });
-  
-  app.use((err, req, res, next) => {
-    console.error('Server Error:', err);
-    res.status(500).json({
-      error: 'Internal Server Error',
-      message: config.server.nodeEnv === 'development' ? err.message : undefined
-    });
+
+  const { url } = await startStandaloneServer(server, {
+    listen: { port: config.server.port },
+    context: async ({ req }) => ({
+      dataSources: {
+        weatherService,
+        rankingService
+      }
+    }),
   });
+
+  console.log(`🚀 Server ready at ${url}`);
   
-  const port = config.server.port;
-  app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-  });
-  
-  return app;
+  return server;
 }
 
 startServer().catch(err => {

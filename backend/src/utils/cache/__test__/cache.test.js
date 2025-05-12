@@ -1,4 +1,4 @@
-import { createCache } from './cache.js';
+import { createCache } from '../cache.js';
 
 describe('cache', () => {
   let cache;

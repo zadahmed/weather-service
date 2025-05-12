@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
 
-export const createCache = (ttl = 3600) => {
+const createCache = (ttl = 3600) => {
   const cache = new NodeCache({ 
     stdTTL: ttl,
     checkperiod: Math.min(ttl * 0.2, 600),

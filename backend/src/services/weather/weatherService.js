@@ -26,7 +26,6 @@ class WeatherService {
       
       const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1`;
       const geoResponse = await axios.get(geoUrl);
-      
       if (!geoResponse.data.results || geoResponse.data.results.length === 0) {
         throw new Error(`Location not found: ${location}`);
       }

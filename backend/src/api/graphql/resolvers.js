@@ -1,4 +1,4 @@
-import { WEATHER_DESCRIPTIONS } from '../../utils/constants.js';
+import { WEATHER_DESCRIPTIONS } from "common";
 
 const resolvers = {
   Query: {

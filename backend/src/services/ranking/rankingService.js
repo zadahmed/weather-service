@@ -1,5 +1,5 @@
+import { ACTIVITIES, WEATHER_CODES, WEATHER_DESCRIPTIONS } from 'common';
 import weatherService from '../weather/index.js';
-import { ACTIVITIES, WEATHER_CODES, WEATHER_DESCRIPTIONS } from '../../utils/constants.js';
 
 /**
  * Service for ranking activities based on weather conditions
